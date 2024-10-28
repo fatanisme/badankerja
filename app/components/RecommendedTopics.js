@@ -8,7 +8,6 @@ const strapiUrl = process.env.NEXT_PUBLIC_STRAPI_API_URL;
 
 export function RecommendedTopics() {
   const [topics, setTopics] = useState([]); // State to hold topic
-
   // Fetch topic and posts on component mount
   useEffect(() => {
     const fetchTopics = async () => {
@@ -48,12 +47,7 @@ export function RecommendedTopics() {
           </Link>
         ))}
       </div>
-      <Link
-        href="/topics"
-        className="text-green-600 hover:underline mt-4 inline-block"
-      >
-        See more topics
-      </Link>
+
     </div>
   );
 }
