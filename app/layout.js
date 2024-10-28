@@ -3,8 +3,16 @@ import { Footer } from '@/components/Footer'
 import './globals.css'
 
 export const metadata = {
-  title: 'BADANKERJA',
-  description: 'Find your dream job',
+  metadataBase: new URL('https://badankerja.com'),
+  keywords: ["Lowongan Kerja", "Karir", "Pencarian Kerja", "Lowongan Kerja Terbaru", "Loker", "Job Vacancy", "Peluang Karir", "Rekrutmen", "Info Lowongan Kerja", "Kerja di Indonesia", "Lowongan Pekerjaan 2024", "Bursa Kerja", "Resume dan CV", "Tips Karir", "Jabatan Pekerjaan"],
+  title: {
+    default: "BadanKerja",
+    template: "%s | BadanKerja",
+  },
+  openGraph: {
+    description: "Cari pekerjaan impianmu disini !",
+    images: ["https://strapi.badankerja.com/uploads/badan_kerja_og_image_c0eb8277c0.jpg"]
+  }
 }
 
 export default function RootLayout({ children }) {

@@ -73,24 +73,6 @@ export default function Home() {
         fetchPosts(); // Call fetchPosts function
     }, []); // Empty dependency array ensures this runs once on mount
 
-    const handleSearch = () => {
-        setCurrentPage(1);
-        const filtered = jobs.filter(
-            (job) =>
-                job.company_id.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                job.position.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                job.description.toLowerCase().includes(searchTerm.toLowerCase())
-        );
-        setFilteredJobs(filtered);
-
-        // Update card title based only on search term
-        setCardTitle(
-            filtered.length > 0
-                ? `Lowongan kerja berdasarkan kata kunci: ${searchTerm}`
-                : "Tidak ada lowongan kerja yang ditemukan."
-        );
-    };
-
 
     const indexOfLastJob = currentPage * jobsPerPage;
     const indexOfFirstJob = indexOfLastJob - jobsPerPage;

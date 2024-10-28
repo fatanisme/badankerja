@@ -1,73 +1,60 @@
-"use client";
-import { useState, useEffect } from 'react';
-import { useParams } from 'next/navigation';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { RecommendedTopics } from "@/components/RecommendedTopics";
-import { Button } from "@/components/ui/button"; // Assuming you have a Button component
-import qs from "qs";
+import { getAllPosts } from '../../utils/api';
+import PostDetail from '@/components/PostDetail';
 
-const strapiUrl = process.env.NEXT_PUBLIC_STRAPI_API_URL;
+export async function generateMetadata({ params }) {
+    const { slug } = params;
 
-export default function PostDetail() {
-    const params = useParams();
-    const [post, setPost] = useState(null);
-    const [posts, setPosts] = useState([]);
+    const posts = await getAllPosts();
+    const foundPost = posts.find(p => p.slug === slug);
 
-    useEffect(() => {
-        const fetchPosts = async () => {
-            const postsUrl = `${strapiUrl}/articles?` + qs.stringify({
-                fields: ["title", "slug", "description", "publishedAt"],
-                populate: "*",
-                sort: ["publishedAt:desc"],
-                pagination: { pageSize: 10 }
-            });
-            try {
-                const postResponse = await fetch(postsUrl);
-                if (!postResponse.ok) {
-                    throw new Error(`HTTP error! status: ${postResponse.status}`);
-                }
-                const postData = await postResponse.json();
-                setPosts(postData.data); // Set posts data in state
-            } catch (error) {
-                console.error('Error fetching posts:', error);
-            }
+    if (!foundPost) {
+        return {
+            title: "Blog tidak ditemukan",
+            description: "Halaman Blog yang anda Cari tidak ditemukan !"
         };
-
-        fetchPosts(); // Call fetchPosts function
-    }, []); // Run this effect only once on component mount
-
-    useEffect(() => {
-        const foundPost = posts.find(p => p.slug === params.slug);
-        setPost(foundPost); // Set post whenever posts change
-    }, [posts, params.slug]);
-
-    if (!post) {
-        return <div className="container mx-auto px-4 py-8">Loading...</div>;
     }
 
-    return (
-        <div className="container mx-auto px-4 py-8">
-            <div className="flex flex-col md:flex-row md:space-x-4">
-                <div className="flex-1 mb-4 md:mb-0">
-                    <Card>
-                        <CardHeader>
-                            <CardTitle className="text-2xl font-bold">{post.title}</CardTitle>
-                            <p className="text-sm text-gray-500">{post.publishedAt}</p>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="mb-4">
-                                <h3 className="text-lg font-semibold mb-2">Konten</h3>
-                                <p>{post.description}</p>
-                            </div>
-                            <Button className="w-full mt-4">Bagikan</Button>
-                        </CardContent>
-                    </Card>
-                </div>
+    return {
+        title: foundPost.title,
+        description: foundPost.description,
+        openGraph: {
+            description: foundPost.description,
+            images: foundPost.cover, // Make sure foundPost.cover is an array or a string
+        },
+    };
+}
 
-                <div className="flex-none w-full md:w-1/3">
-                    <RecommendedTopics />
-                </div>
-            </div>
-        </div>
-    );
+export async function generateStaticParams() {
+    try {
+        const strapiUrl = process.env.NEXT_PUBLIC_STRAPI_API_URL;
+        const response = await fetch(`${strapiUrl}/articles`);
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const result = await response.json();
+        // Access the data array
+        const posts = result.data;
+
+        // Log the result to check the structure
+
+        if (!Array.isArray(posts)) {
+            throw new Error(`Invalid data format received: ${typeof posts}`);
+        }
+
+        // Map over the data to create params
+        return posts.map((post) => ({
+            slug: post.slug,
+        }));
+    } catch (err) {
+        console.error('Error fetching articles:', err.message);
+        // Return an empty array if there’s an error
+        return [];
+    }
+}
+
+export default async function Page({ params }) {
+    const posts = await getAllPosts();
+    return <PostDetail posts={posts} slug={params.slug} />;
 }

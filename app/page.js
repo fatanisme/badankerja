@@ -6,10 +6,8 @@ import { JobCard } from "@/components/JobCard";
 import { PostCard } from "@/components/PostCard";
 import { Pagination } from "@/components/Pagination";
 import { RecommendedTopics } from "@/components/RecommendedTopics";
-import qs from "qs";
+import { getAllJobs, getAllPosts } from "./utils/api";
 
-// Get data from Strapi API
-const strapiUrl = process.env.NEXT_PUBLIC_STRAPI_API_URL;
 
 export default function Home() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -23,51 +21,15 @@ export default function Home() {
 
   // Fetch jobs and posts on component mount
   useEffect(() => {
-    const fetchJobs = async () => {
-      const jobsUrl =
-        `${strapiUrl}/job-listings?` +
-        qs.stringify({
-          fields: ["slug", "publishedAt"],
-          populate: "company_id.logo",
-          sort: ["publishedAt:desc"],
-          pagination: { pageSize: 10 },
-        });
-      try {
-        const jobResponse = await fetch(jobsUrl);
-        if (!jobResponse.ok) {
-          throw new Error(`HTTP error! status: ${jobResponse.status}`);
-        }
-        const jobData = await jobResponse.json();
-        setJobs(jobData.data); // Set jobs data in state
-        setFilteredJobs(jobData.data); // Initialize filtered jobs
-      } catch (error) {
-        console.error("Error fetching jobs:", error);
-      }
+    const fetchJobsAndPosts = async () => {
+      const jobsData = await getAllJobs();
+      const postsData = await getAllPosts();
+      setJobs(jobsData);
+      setFilteredJobs(jobsData); // Initialize filtered jobs
+      setPosts(postsData); // Set posts data in state
     };
 
-    const fetchPosts = async () => {
-      const postsUrl =
-        `${strapiUrl}/articles?` +
-        qs.stringify({
-          fields: ["title", "slug", "publishedAt"],
-          populate: "*",
-          sort: ["publishedAt:desc"],
-          pagination: { pageSize: 10 },
-        });
-      try {
-        const postResponse = await fetch(postsUrl);
-        if (!postResponse.ok) {
-          throw new Error(`HTTP error! status: ${postResponse.status}`);
-        }
-        const postData = await postResponse.json();
-        setPosts(postData.data); // Set posts data in state
-      } catch (error) {
-        console.error("Error fetching posts:", error);
-      }
-    };
-
-    fetchJobs(); // Call fetchJobs function
-    fetchPosts(); // Call fetchPosts function
+    fetchJobsAndPosts(); // Call fetch function
   }, []); // Empty dependency array ensures this runs once on mount
 
   const handleSearch = () => {

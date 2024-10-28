@@ -6,9 +6,7 @@ import { PostCard } from "@/components/PostCard";
 import { Pagination } from "@/components/Pagination";
 import { RecommendedTopics } from "@/components/RecommendedTopics";
 import { JobCard } from "@/components/JobCard"; // Impor JobCard;
-import qs from "qs";
-
-const strapiUrl = process.env.NEXT_PUBLIC_STRAPI_API_URL;
+import { getAllJobs, getAllPosts } from '../utils/api';
 export default function Blog() {
     const [searchTerm, setSearchTerm] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
@@ -20,56 +18,26 @@ export default function Blog() {
     const maxJobCards = 8; // Limit to 8 jobs
 
     useEffect(() => {
-        const fetchJobs = async () => {
-            const jobsUrl = `${strapiUrl}/job-listings?` + qs.stringify({
-                fields: ["slug", "publishedAt"],
-                populate: "company_id.logo",
-                sort: ["publishedAt:desc"],
-                pagination: { pageSize: 10 }
-            });
-            try {
-                const jobResponse = await fetch(jobsUrl);
-                if (!jobResponse.ok) {
-                    throw new Error(`HTTP error! status: ${jobResponse.status}`);
-                }
-                const jobData = await jobResponse.json();
-                setJobs(jobData.data); // Set jobs data in state
-            } catch (error) {
-                console.error('Error fetching jobs:', error);
-            }
+        const fetchJobsAndPosts = async () => {
+            const jobsData = await getAllJobs();
+            const postsData = await getAllPosts();
+            setJobs(jobsData);
+            setPosts(postsData); // Set posts data in state
+            setFilteredPosts(postsData); // Initialize filtered posts
         };
 
-        const fetchPosts = async () => {
-            const postsUrl = `${strapiUrl}/articles?` + qs.stringify({
-                fields: ["title", "slug", "description", "publishedAt"],
-                populate: "*",
-                sort: ["publishedAt:desc"],
-                pagination: { pageSize: 10 }
-            });
-            try {
-                const postResponse = await fetch(postsUrl);
-                if (!postResponse.ok) {
-                    throw new Error(`HTTP error! status: ${postResponse.status}`);
-                }
-                const postData = await postResponse.json();
-                setPosts(postData.data); // Set posts data in state
-                setFilteredPosts(postData.data); // Initialize filtered jobs
-            } catch (error) {
-                console.error('Error fetching posts:', error);
-            }
-        };
-
-        fetchJobs(); // Call fetchJobs function
-        fetchPosts(); // Call fetchPosts function
-    }, []); // Empty dependency array ensures this runs once on mount
+        fetchJobsAndPosts(); // Call fetch function
+    }, []);
     const handleSearch = () => {
         setCurrentPage(1);
-        const filtered = posts.filter(post =>
-            post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            post.content.toLowerCase().includes(searchTerm.toLowerCase())
-        );
+        const filtered = posts.filter(post => {
+            const title = post.title ? post.title.toLowerCase() : '';
+            const content = post.content ? post.content.toLowerCase() : '';
+            return title.includes(searchTerm.toLowerCase()) || content.includes(searchTerm.toLowerCase());
+        });
         setFilteredPosts(filtered);
     };
+
 
     const handleClear = () => {
         setSearchTerm('');
