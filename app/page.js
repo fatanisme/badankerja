@@ -72,12 +72,17 @@ export default function Home() {
 
   const handleSearch = () => {
     setCurrentPage(1);
-    const filtered = jobs.filter(
-      (job) =>
-        job.company_id.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        job.position.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        job.description.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const filtered = jobs.filter((job) => {
+      const companyName = job.company_id?.name || '';
+      const position = job.position || '';
+      const description = job.description || '';
+
+      return (
+        companyName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        position.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        description.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    });
     setFilteredJobs(filtered);
 
     // Update card title based only on search term
