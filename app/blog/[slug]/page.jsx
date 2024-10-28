@@ -38,7 +38,6 @@ export default function PostDetail() {
 
     useEffect(() => {
         const foundPost = posts.find(p => p.slug === params.slug);
-        console.log(foundPost);
         setPost(foundPost); // Set post whenever posts change
     }, [posts, params.slug]);
 
