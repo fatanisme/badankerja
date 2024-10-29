@@ -5,8 +5,9 @@ export async function generateMetadata({ params }) {
     const { slug } = params;
 
     const posts = await getAllPosts();
+    console.log("posts", posts);
     const foundPost = posts.find(p => p.slug === slug);
-
+    console.log("foundPost", foundPost);
     if (!foundPost) {
         return {
             title: "Blog tidak ditemukan",
@@ -16,7 +17,6 @@ export async function generateMetadata({ params }) {
 
     return {
         title: foundPost.title,
-        description: foundPost.description,
         openGraph: {
             description: foundPost.description,
             images: foundPost.cover, // Make sure foundPost.cover is an array or a string

@@ -18,7 +18,7 @@ export async function generateMetadata({ params }) {
         description: foundJob.description,
         openGraph: {
             description: foundJob.description,
-            images: foundJob.cover, // Make sure foundJob.cover is an array or a string
+            images: foundJob.cover,
         },
     };
 }
