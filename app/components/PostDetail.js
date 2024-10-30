@@ -9,7 +9,7 @@ export default function PostDetail({ posts, slug }) {
 
     useEffect(() => {
         const foundPost = posts.find(p => p.slug === slug);
-        setPost(foundPost); // Set post whenever posts change
+        setPost(foundPost); // Set post whenever posts change;
     }, [posts, slug]);
 
     if (!post) {

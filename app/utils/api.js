@@ -6,7 +6,7 @@ export const getAllJobs = async () => {
     const jobsUrl =
         `${strapiUrl}/job-listings?` +
         qs.stringify({
-            populate: ["company_id.logo", "job_categories"],
+            populate: ["company_id.logo", "job_categories", "job_types", "job_locations"],
             sort: ["publishedAt:desc"],
             pagination: { pageSize: 10 },
         });

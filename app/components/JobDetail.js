@@ -38,7 +38,23 @@ export default function JobDetail() {
     }
 
     const jobSalary = "Gaji : " + job.salary;
-    const jobLocation = "Lokasi : " + job.location;
+    const jobLocations = job.job_locations.map(location => location.name).join(', ');
+    const jobLocation = "Lokasi : " + jobLocations;
+
+    const jobTypes = job.job_types.map(type => type.name).join(', ');
+    const jobType = "Tipe Pekerjaan : " + jobTypes;
+    const jobCategories = job.job_categories.map((category, index) => (
+        <a href={`/topic/${category.name.toLowerCase()}`} key={index} className="text-blue-500 underline">
+            #{category.name}
+        </a>
+    ));
+
+    const jobCategory = (
+        <span>
+            Kategori : {jobCategories.reduce((prev, curr) => [prev, ' ', curr])}
+        </span>
+    );
+
     const formatDate = (dateString) => {
         const options = { day: 'numeric', month: 'long', year: 'numeric' };
         return new Date(dateString).toLocaleDateString('id-ID', options);
@@ -95,11 +111,13 @@ export default function JobDetail() {
                                 <article dangerouslySetInnerHTML={{ __html: marked(job.company_id.description) }} className='max-w-screen-lg prose text-justify' />
                                 <article dangerouslySetInnerHTML={{ __html: marked(job.description) }} className='max-w-screen-lg prose text-justify' />
                             </div>
-                            {job.salary || job.location ? (
+                            {job.salary || job.job_locations[0].name || job.job_types[0].name || job.job_categories[0].name ? (
                                 <div className="mb-4">
                                     <h3 className="text-2xl font-bold mb-2">Informasi Tambahan</h3>
                                     {job.salary && <p>{jobSalary}</p>}
-                                    {job.location && <p>{jobLocation}</p>}
+                                    {job.job_locations[0].name && <p>{jobLocation}</p>}
+                                    {job.job_types[0].name && <p>{jobType}</p>}
+                                    {job.job_categories[0].name && <p>{jobCategory}</p>}
                                 </div>
                             ) : null}
                             <div className="text-right">

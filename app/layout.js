@@ -9,6 +9,7 @@ export const metadata = {
     default: "BadanKerja",
     template: "%s | BadanKerja",
   },
+  description: "Cari pekerjaan impianmu disini !",
   openGraph: {
     description: "Cari pekerjaan impianmu disini !",
     images: ["https://strapi.badankerja.com/uploads/badan_kerja_og_image_c0eb8277c0.jpg"]

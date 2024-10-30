@@ -5,9 +5,7 @@ export async function generateMetadata({ params }) {
     const { slug } = params;
 
     const posts = await getAllPosts();
-    console.log("posts", posts);
     const foundPost = posts.find(p => p.slug === slug);
-    console.log("foundPost", foundPost);
     if (!foundPost) {
         return {
             title: "Blog tidak ditemukan",
