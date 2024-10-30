@@ -24,13 +24,20 @@ export const getAllJobs = async () => {
     }
 };
 
+
 export const getAllPosts = async () => {
+    const today = new Date().toISOString(); // Mendapatkan tanggal hari ini dalam format ISO
     const postsUrl =
         `${strapiUrl}/articles?` +
         qs.stringify({
             populate: "*",
-            sort: ["publishedAt:desc"],
+            sort: ["publish_date:desc"], // Menggunakan publish_date untuk pengurutan
             pagination: { pageSize: 10 },
+            filters: {
+                publish_date: {
+                    $lte: today, // Menggunakan operator $gt untuk filter tanggal
+                },
+            },
         });
 
     try {
@@ -39,9 +46,10 @@ export const getAllPosts = async () => {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
-        return data.data; // Return post data
+        return data.data; // Mengembalikan data postingan
     } catch (error) {
         console.error("Error fetching posts:", error);
-        return []; // Return empty array on error
+        return []; // Mengembalikan array kosong jika terjadi error
     }
 };
+
