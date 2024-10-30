@@ -4,7 +4,8 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { RecommendedTopics } from "@/components/RecommendedTopics";
 import { Button } from "@/components/ui/button";
-import { Instagram, Twitter, Linkedin, Facebook } from 'lucide-react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTwitter, faLinkedin, faFacebook, faWhatsapp, faTelegram } from '@fortawesome/free-brands-svg-icons'; // Ensure these icons are available
 import { getAllJobs, getAllPosts } from "../utils/api";
 import { PostCard } from "@/components/PostCard";
 import { marked } from "marked";
@@ -20,10 +21,10 @@ export default function JobDetail() {
             const jobsData = await getAllJobs();
             const postsData = await getAllPosts();
             setJobs(jobsData);
-            setPosts(postsData); // Set posts data in state
+            setPosts(postsData);
         };
 
-        fetchJobsAndPosts(); // Call fetch function
+        fetchJobsAndPosts();
     }, []);
 
     useEffect(() => {
@@ -31,7 +32,7 @@ export default function JobDetail() {
         if (foundJob) {
             setJob(foundJob);
         }
-    }, [jobs, params.slug]); // Dependency array includes jobs
+    }, [jobs, params.slug]);
 
     if (!job) {
         return <div className="container mx-auto px-4 py-8">Loading...</div>;
@@ -40,7 +41,6 @@ export default function JobDetail() {
     const jobSalary = "Gaji : " + job.salary;
     const jobLocations = job.job_locations.map(location => location.name).join(', ');
     const jobLocation = "Lokasi : " + jobLocations;
-
     const jobTypes = job.job_types.map(type => type.name).join(', ');
     const jobType = "Tipe Pekerjaan : " + jobTypes;
     const jobCategories = job.job_categories.map((category, index) => (
@@ -48,7 +48,6 @@ export default function JobDetail() {
             {category.name}
         </a>
     ));
-
     const jobCategory = (
         <span>
             Kategori : {jobCategories.reduce((prev, curr) => [prev, ' ', curr])}
@@ -62,7 +61,18 @@ export default function JobDetail() {
 
     const logoUrl = job.company_id?.logo?.url
         ? `${process.env.NEXT_PUBLIC_STRAPI_IMG_URL}${job.company_id.logo.url}`
-        : null; // Fallback to null if no logo URL is available
+        : null;
+
+    const shareUrl = encodeURIComponent(window.location.href);
+    const shareText = encodeURIComponent(`Check out this job: ${job.title}`);
+
+    const socialShareLinks = {
+        twitter: `https://twitter.com/intent/tweet?text=${shareText}&url=${shareUrl}`,
+        linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${shareUrl}`,
+        facebook: `https://www.facebook.com/sharer/sharer.php?u=${shareUrl}`,
+        whatsapp: `https://api.whatsapp.com/send?text=${shareText} ${shareUrl}`,
+        telegram: `https://t.me/share/url?url=${shareUrl}&text=${shareText}`,
+    };
 
     return (
         <div className="container mx-auto px-4 py-8">
@@ -75,7 +85,7 @@ export default function JobDetail() {
                                     <img
                                         src={logoUrl}
                                         alt={`${job.company_id?.name} logo`}
-                                        className="h-12 w-12 rounded-full mr-4" // Adjust size and styles as needed
+                                        className="h-12 w-12 rounded-full mr-4"
                                     />
                                 )}
                                 <h1 className="text-2xl font-bold text-blue-600">{job.company_id.name}</h1>
@@ -84,21 +94,25 @@ export default function JobDetail() {
                                 <div className="text-right">
                                     <h3 className="text-lg font-bold text-blue-600 text-center">Share</h3>
                                     <div className="flex justify-end space-x-6 mt-2">
-                                        <a href="https://www.instagram.com/badankerja" target="_blank" rel="noopener noreferrer" className="text-[#e4405f] hover:text-red-700 transform hover:scale-110 transition-transform duration-200">
-                                            <span className="sr-only">Instagram</span>
-                                            <Instagram />
-                                        </a>
-                                        <a href="https://twitter.com/badankerja" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-500 transform hover:scale-110 transition-transform duration-200">
+                                        <a href={socialShareLinks.twitter} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-500 transform hover:scale-110 transition-transform duration-200">
                                             <span className="sr-only">Twitter</span>
-                                            <Twitter />
+                                            <FontAwesomeIcon icon={faTwitter} className="h-6 w-6" />
                                         </a>
-                                        <a href="https://www.linkedin.com/company/badankerja/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-700 transform hover:scale-110 transition-transform duration-200">
+                                        <a href={socialShareLinks.linkedin} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-700 transform hover:scale-110 transition-transform duration-200">
                                             <span className="sr-only">LinkedIn</span>
-                                            <Linkedin />
+                                            <FontAwesomeIcon icon={faLinkedin} className="h-6 w-6" />
                                         </a>
-                                        <a href="https://www.facebook.com/badankerja" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-700 transform hover:scale-110 transition-transform duration-200">
+                                        <a href={socialShareLinks.facebook} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-700 transform hover:scale-110 transition-transform duration-200">
                                             <span className="sr-only">Facebook</span>
-                                            <Facebook />
+                                            <FontAwesomeIcon icon={faFacebook} className="h-6 w-6" />
+                                        </a>
+                                        <a href={socialShareLinks.whatsapp} target="_blank" rel="noopener noreferrer" className="text-green-500 hover:text-green-600 transform hover:scale-110 transition-transform duration-200">
+                                            <span className="sr-only">WhatsApp</span>
+                                            <FontAwesomeIcon icon={faWhatsapp} className="h-6 w-6" />
+                                        </a>
+                                        <a href={socialShareLinks.telegram} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-600 transform hover:scale-110 transition-transform duration-200">
+                                            <span className="sr-only">Telegram</span>
+                                            <FontAwesomeIcon icon={faTelegram} className="h-6 w-6" />
                                         </a>
                                     </div>
                                 </div>
