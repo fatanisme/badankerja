@@ -28,6 +28,7 @@ export const getAllPosts = async () => {
     const postsUrl =
         `${strapiUrl}/articles?` +
         qs.stringify({
+            populate: "*",
             sort: ["publishedAt:desc"],
             pagination: { pageSize: 10 },
         });

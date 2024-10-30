@@ -2,7 +2,6 @@ import { getAllJobs } from '../../utils/api';
 import JobDetail from '@/components/JobDetail';
 export async function generateMetadata({ params }) {
     const { slug } = params;
-
     const jobs = await getAllJobs();
     const foundJob = jobs.find(p => p.slug === slug);
 

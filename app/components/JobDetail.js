@@ -45,7 +45,7 @@ export default function JobDetail() {
     const jobType = "Tipe Pekerjaan : " + jobTypes;
     const jobCategories = job.job_categories.map((category, index) => (
         <a href={`/topic/${category.name.toLowerCase()}`} key={index} className="text-blue-500 underline">
-            #{category.name}
+            {category.name}
         </a>
     ));
 
@@ -109,7 +109,7 @@ export default function JobDetail() {
                             <div className="mb-4">
                                 <h3 className="text-2xl font-bold mb-2">Deskripsi Pekerjaan</h3>
                                 <article dangerouslySetInnerHTML={{ __html: marked(job.company_id.description) }} className='max-w-screen-lg prose text-justify' />
-                                <article dangerouslySetInnerHTML={{ __html: marked(job.description) }} className='max-w-screen-lg prose text-justify' />
+                                <article dangerouslySetInnerHTML={{ __html: marked(job.description) }} className='max-w-screen-lg prose text-justify py-3' />
                             </div>
                             {(job.salary || job.job_locations.length > 0 || job.job_types.length > 0 || job.job_categories.length > 0) ? (
                                 <div className="mb-4">

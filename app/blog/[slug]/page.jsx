@@ -3,7 +3,6 @@ import PostDetail from '@/components/PostDetail';
 
 export async function generateMetadata({ params }) {
     const { slug } = params;
-
     const posts = await getAllPosts();
     const foundPost = posts.find(p => p.slug === slug);
     if (!foundPost) {
