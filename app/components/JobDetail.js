@@ -111,15 +111,16 @@ export default function JobDetail() {
                                 <article dangerouslySetInnerHTML={{ __html: marked(job.company_id.description) }} className='max-w-screen-lg prose text-justify' />
                                 <article dangerouslySetInnerHTML={{ __html: marked(job.description) }} className='max-w-screen-lg prose text-justify' />
                             </div>
-                            {job.salary || job.job_locations[0].name || job.job_types[0].name || job.job_categories[0].name ? (
+                            {(job.salary || job.job_locations.length > 0 || job.job_types.length > 0 || job.job_categories.length > 0) ? (
                                 <div className="mb-4">
                                     <h3 className="text-2xl font-bold mb-2">Informasi Tambahan</h3>
                                     {job.salary && <p>{jobSalary}</p>}
-                                    {job.job_locations[0].name && <p>{jobLocation}</p>}
-                                    {job.job_types[0].name && <p>{jobType}</p>}
-                                    {job.job_categories[0].name && <p>{jobCategory}</p>}
+                                    {job.job_locations.length > 0 && <p>{jobLocation}</p>}
+                                    {job.job_types.length > 0 && <p>{jobType}</p>}
+                                    {job.job_categories.length > 0 && <p>{jobCategory}</p>}
                                 </div>
                             ) : null}
+
                             <div className="text-right">
                                 <small className='text-gray-500'>{formatDate(job.publishedAt)}</small>
                             </div>
