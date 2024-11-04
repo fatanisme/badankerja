@@ -4,11 +4,10 @@ export async function generateMetadata({ params }) {
     const { slug } = params;
     const jobs = await getAllJobs();
     const foundJob = jobs.find(p => p.slug === slug);
-
     if (!foundJob) {
         return {
-            title: "Blog tidak ditemukan",
-            description: "Halaman Blog yang anda Cari tidak ditemukan !"
+            title: "Job tidak ditemukan",
+            description: "Halaman Job Detail yang anda Cari tidak ditemukan !"
         };
     }
 

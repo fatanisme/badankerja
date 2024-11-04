@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import qs from "qs";
+import Analytics from '../components/analytics/Analytics'
 
 const strapiUrl = process.env.NEXT_PUBLIC_STRAPI_API_URL;
 
@@ -50,6 +51,7 @@ export function Header() {
 
     return (
         <header className="w-full bg-white relative">
+            <Analytics />
             <div className="container mx-auto flex justify-between items-center">
                 <div className="flex-grow flex justify-center">
                     <Link href="/" className="text-4xl font-bold text-blue-600 h-16 flex items-center">

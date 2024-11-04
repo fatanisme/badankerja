@@ -139,7 +139,11 @@ export default function JobDetail() {
                                 <small className='text-gray-500'>{formatDate(job.publishedAt)}</small>
                             </div>
                             {job.applyLink && (
-                                <Button className="w-full mt-4 bg-blue-600 font-bold text-white hover:bg-blue-700">Lamar Sekarang</Button>
+                                <div className="text-center">
+                                    <a href={job.applyLink} className="w-full mt-4" target="_blank">
+                                        <Button className="bg-blue-600 font-bold text-white hover:bg-blue-700 w-full">Lamar Sekarang</Button>
+                                    </a>
+                                </div>
                             )}
                         </CardContent>
                     </Card>
